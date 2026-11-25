@@ -1,0 +1,343 @@
+```html
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rihla DZ - خطّط، احجز، وسافر بثقة</title>
+    <!-- تحميل مكتبة Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- تحميل خط Cairo العربي -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        emeraldDz: '#006233',
+                        coralDz: '#D21034',
+                        sandBg: '#F8F9FA'
+                    },
+                    fontFamily: {
+                        cairo: ['Cairo', 'sans-serif']
+                    }
+                }
+            }
+        };
+    </script>
+    <style>
+        body {
+            font-family: 'Cairo', sans-serif;
+            background-color: #F8F9FA;
+            color: #1F2937;
+        }
+        .hide-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .hide-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+        @keyframes fadeSlideUp {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        .animate-fade-up {
+            animation: fadeSlideUp 0.25s ease-out forwards;
+        }
+    </style>
+</head>
+<body class="bg-sandBg text-gray-800 antialiased pb-24 selection:bg-emeraldDz selection:text-white">
+
+    <!-- الشريط العلوي مع خلفية بانورامية والشعار الرسمي ومبدل الأدوار -->
+    <header class="relative overflow-hidden shadow-sm sticky top-0 z-40 max-w-md mx-auto border-b border-gray-100 bg-white">
+        <img
+            src="https://images.unsplash.com/photo-1589802829985-817e51171b92?auto=format&fit=crop&w=900&q=80"
+            alt="بانوراما الجزائر"
+            onerror="handleImgError(this, 'Rihla DZ', '#006233')"
+            class="absolute inset-0 w-full h-full object-cover opacity-20 pointer-events-none"
+        >
+        <div class="absolute inset-0 bg-white/90 backdrop-blur-xs pointer-events-none"></div>
+
+        <div class="relative px-4 pt-3 pb-2.5 space-y-2.5">
+            <!-- الصف الأول: الهوية، الشعار، اللغة والإشعارات -->
+            <div class="flex justify-between items-center">
+                <div class="flex items-center space-x-2.5 space-x-reverse">
+                    <div class="w-10 h-10 rounded-2xl bg-gradient-to-br from-emeraldDz to-emerald-800 text-white flex flex-col items-center justify-center font-extrabold shadow-sm ring-2 ring-emeraldDz/20">
+                        <span class="text-xs leading-none">DZ</span>
+                        <span class="text-[8px] text-emerald-200 mt-0.5">RIHLA</span>
+                    </div>
+                    <div>
+                        <div class="flex items-center gap-1.5">
+                            <h1 class="font-extrabold text-sm text-gray-900">Rihla DZ</h1>
+                            <span class="text-[10px] bg-emeraldDz/10 text-emeraldDz font-bold px-2 py-0.5 rounded-full">هيفاء 👋</span>
+                        </div>
+                        <p class="text-[11px] text-emeraldDz font-bold" id="brand-slogan">خطّط، احجز، وسافر بثقة.</p>
+                    </div>
+                </div>
+
+                <div class="flex items-center space-x-1.5 space-x-reverse">
+                    <button
+                        type="button"
+                        onclick="toggleLang()"
+                        id="lang-btn"
+                        class="px-2.5 py-1.5 text-xs font-bold bg-white border border-gray-200 rounded-xl hover:bg-gray-100 transition shadow-2xs active:scale-95"
+                    >
+                        FR
+                    </button>
+                    <button
+                        type="button"
+                        onclick="showToast(isFrench ? 'Aucune nouvelle notification 🔔' : 'إشعار: تم ربط جميع الوجهات والمطاعم بخرائط Google Maps 🗺️')"
+                        aria-label="الإشعارات"
+                        class="w-9 h-9 rounded-full bg-white border border-gray-200 flex items-center justify-center relative hover:bg-gray-100 transition shadow-2xs active:scale-95"
+                    >
+                        <span>🔔</span>
+                        <span class="absolute top-1.5 right-1.5 w-2 h-2 bg-coralDz rounded-full"></span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- الصف الثاني: مبدّل الأدوار (زائر / شريك / إدارة) -->
+            <div class="bg-gray-100/90 p-1 rounded-xl grid grid-cols-3 gap-1 text-[11px] font-bold">
+                <button
+                    type="button"
+                    id="role-btn-traveler"
+                    onclick="switchRole('traveler')"
+                    class="role-switch-btn py-1.5 px-2 rounded-lg bg-emeraldDz text-white shadow-2xs transition"
+                >
+                    🧳 زائر / مسافر
+                </button>
+                <button
+                    type="button"
+                    id="role-btn-partner"
+                    onclick="switchRole('partner')"
+                    class="role-switch-btn py-1.5 px-2 rounded-lg text-gray-600 hover:text-gray-900 transition"
+                >
+                    🏨 شريك / مزود
+                </button>
+                <button
+                    type="button"
+                    id="role-btn-admin"
+                    onclick="switchRole('admin')"
+                    class="role-switch-btn py-1.5 px-2 rounded-lg text-gray-600 hover:text-gray-900 transition"
+                >
+                    📊 لوحة الإدارة
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- المحتوى الرئيسي للتطبيق -->
+    <main class="max-w-md mx-auto p-4 space-y-6">
+
+        <!-- 1. تبويب الرئيسية (#tab-home) -->
+        <div id="tab-home" class="space-y-6 animate-fade-up">
+
+            <!-- بطاقة مخطط الرحلة الذكي المطور -->
+            <section class="relative overflow-hidden bg-gradient-to-br from-emeraldDz via-emerald-800 to-emerald-950 text-white p-5 rounded-2xl shadow-lg space-y-4">
+                <img
+                    src="https://images.unsplash.com/photo-1509316785289-025f5b846b35?auto=format&fit=crop&w=800&q=80"
+                    alt="خلفية مخطط الرحلة"
+                    onerror="this.style.display='none'"
+                    class="absolute inset-0 w-full h-full object-cover opacity-15 mix-blend-overlay pointer-events-none"
+                >
+
+                <div class="relative flex justify-between items-center">
+                    <div>
+                        <h2 class="font-bold text-base" id="planner-title">✨ مخطط الرحلة الذكي الشامل</h2>
+                        <p class="text-[11px] text-emerald-200">إقامة + نقل + مرشد معتمد + أنشطة + خرائط</p>
+                    </div>
+                    <span class="text-[10px] bg-coralDz px-2.5 py-1 rounded-full font-bold shadow-2xs" id="planner-badge">MVP: سطيف • قسنطينة • بجاية</span>
+                </div>
+
+                <div class="relative space-y-3">
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+                        <div>
+                            <label for="dest-select" class="block text-xs text-emerald-100 mb-1" id="label-dest">الوجهة السياحية:</label>
+                            <select id="dest-select" class="w-full bg-white/15 border border-white/25 rounded-xl px-3 py-2.5 text-white text-xs focus:outline-none focus:ring-2 focus:ring-white/40">
+                                <optgroup label="🚀 مدن الانطلاق الأساسية (MVP)" class="text-gray-900 font-bold">
+                                    <option value="سطيف وجميلة" class="text-gray-800">سطيف وجميلة (الآثار الرومانية والهضاب)</option>
+                                    <option value="قسنطينة" class="text-gray-800">قسنطينة (مدينة الجسور المعلقة)</option>
+                                    <option value="بجاية وجيجل" class="text-gray-800">بجاية (الساحل، قورايا، والقبائل)</option>
+                                </optgroup>
+                                <optgroup label="🏔️ الشمال والقبائل" class="text-gray-900 font-bold">
+                                    <option value="تيزي وزو وجرجرة" class="text-gray-800">تيزي وزو وجرجرة (القرى والثلوج)</option>
+                                    <option value="الجزائر وتيبازة" class="text-gray-800">الجزائر وتيبازة (القصبة والآثار)</option>
+                                </optgroup>
+                                <optgroup label="🏛️ الشرق الجزائري" class="text-gray-900 font-bold">
+                                    <option value="عنابة والقالة" class="text-gray-800">عنابة والقالة (الشواطئ والمحميات)</option>
+                                    <option value="تيمقاد وباتنة" class="text-gray-800">تيمقاد وباتنة (الأوراس والتاريخ)</option>
+                                </optgroup>
+                                <optgroup label="🌊 الغرب الجزائري" class="text-gray-900 font-bold">
+                                    <option value="وهران ومستغانم" class="text-gray-800">وهران ومستغانم (الباهية والساحل)</option>
+                                    <option value="تلمسان" class="text-gray-800">تلمسان (التراث الأندلسي والمنصورة)</option>
+                                </optgroup>
+                                <optgroup label="🏜️ الصحراء والجنوب الكبير" class="text-gray-900 font-bold">
+                                    <option value="تاغيت وبني عباس" class="text-gray-800">تاغيت وبني عباس (الواحات والساورة)</option>
+                                    <option value="غرداية ووادي ميزاب" class="text-gray-800">غرداية ووادي ميزاب (القصور والتراث)</option>
+                                    <option value="تمنراست والهقار" class="text-gray-800">تمنراست والهقار (أسكرام والتاسيلي)</option>
+                                </optgroup>
+                            </select>
+                        </div>
+
+                        <div>
+                            <label for="interest-select" class="block text-xs text-emerald-100 mb-1" id="label-interest">نمط الرحلة والاهتمام:</label>
+                            <select id="interest-select" class="w-full bg-white/15 border border-white/25 rounded-xl px-3 py-2.5 text-white text-xs focus:outline-none focus:ring-2 focus:ring-white/40">
+                                <option value="عطلة نهاية أسبوع منظمة" class="text-gray-800">🗓️ عطلة نهاية أسبوع منظمة</option>
+                                <option value="رحلة عائلية مريحة" class="text-gray-800">👨‍👩‍👧‍👦 رحلة عائلية مريحة</option>
+                                <option value="مغامرة وطبيعة واستكشاف" class="text-gray-800">🏕️ مغامرة وطبيعة واستكشاف</option>
+                                <option value="ثقافية وتراثية وحرفية" class="text-gray-800">🏛️ ثقافية وتراثية وحرفية</option>
+                                <option value="رحلة طلابية / شركات B2B" class="text-gray-800">🎓 رحلة طلابية / شركات B2B</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-2.5">
+                        <div>
+                            <label for="duration-select" class="block text-xs text-emerald-100 mb-1" id="label-duration">مدة الرحلة</label>
+                            <select id="duration-select" class="w-full bg-white/15 border border-white/25 rounded-xl px-2.5 py-2 text-white text-xs focus:outline-none focus:ring-2 focus:ring-white/40">
+                                <option value="يومان (عطلة نهاية أسبوع)" class="text-gray-800">يومان (نهاية أسبوع)</option>
+                                <option value="3 أيام / ليلتان" class="text-gray-800">3 أيام / ليلتان</option>
+                                <option value="5 أيام استكشافية" class="text-gray-800">5 أيام استكشافية</option>
+                                <option value="أسبوع كامل (7 أيام)" class="text-gray-800">أسبوع كامل (7 أيام)</option>
+                            </select>
+                        </div>
+
+                        <div>
+                            <label for="budget-range" class="block text-xs text-emerald-100 mb-1" id="label-budget">الميزانية القصوى</label>
+                            <input
+                                type="range"
+                                id="budget-range"
+                                min="12000"
+                                max="120000"
+                                step="2000"
+                                value="28000"
+                                class="w-full accent-coralDz mt-1.5 cursor-pointer"
+                                oninput="updateBudgetLabel(this.value)"
+                            >
+                            <div class="text-left text-[11px] text-emerald-100 font-bold">
+                                <span id="budget-val">28,000</span> دج
+                            </div>
+                        </div>
+                    </div>
+
+                    <button
+                        type="button"
+                        onclick="generateTrip()"
+                        class="w-full bg-coralDz hover:bg-red-700 text-white font-bold py-2.5 rounded-xl text-sm shadow-md transition active:scale-95"
+                        id="btn-generate"
+                    >
+                        صمّم رحلتي الآن ✨
+                    </button>
+                </div>
+            </section>
+
+            <!-- نتيجة البرنامج الذكي المتكامل القابل للحجز وفتح الموقع في Google Maps -->
+            <section id="ai-plan-result" class="hidden bg-white rounded-2xl shadow-md border border-emerald-200 overflow-hidden animate-fade-up">
+                <div class="relative h-36 w-full bg-emerald-900">
+                    <img
+                        id="ai-plan-img"
+                        src=""
+                        alt="معاينة الوجهة"
+                        onerror="handleImgError(this, 'وجهة سياحية', '#006233')"
+                        class="w-full h-full object-cover"
+                    >
+                    <div class="absolute inset-0 bg-gradient-to-t from-black/85 via-black/30 to-transparent"></div>
+                    <button
+                        type="button"
+                        onclick="document.getElementById('ai-plan-result').classList.add('hidden')"
+                        aria-label="إغلاق البرنامج"
+                        class="absolute top-2.5 left-2.5 w-7 h-7 rounded-full bg-black/60 text-white text-xs flex items-center justify-center hover:bg-black/80 transition"
+                    >
+                        ✕
+                    </button>
+                    <span class="absolute top-2.5 right-3 text-[10px] bg-emeraldDz text-white font-bold px-2.5 py-0.5 rounded-full">باقة ذكية مخصصة ✨</span>
+                    <h4 id="ai-plan-title" class="absolute bottom-2.5 right-3 left-3 font-bold text-sm text-white drop-shadow">
+                        📋 البرنامج المقترح لرحلتك
+                    </h4>
+                </div>
+                <div id="ai-plan-content" class="p-4 text-xs text-gray-700 leading-relaxed space-y-3"></div>
+            </section>
+
+            <!-- التصنيفات السريعة بصور دائرية -->
+            <section>
+                <div class="flex justify-between items-center mb-2.5">
+                    <h3 class="font-bold text-sm text-gray-800" id="cat-heading">استكشف حسب الفئة</h3>
+                    <span class="text-[11px] text-gray-400">مرر للمزيد ←</span>
+                </div>
+                <div class="flex space-x-2.5 space-x-reverse overflow-x-auto hide-scrollbar pb-1">
+                    <button
+                        type="button"
+                        onclick="filterRegion('الكل', this)"
+                        class="filter-btn flex flex-col items-center flex-shrink-0 bg-emeraldDz text-white p-2.5 rounded-2xl shadow-sm border border-gray-100 w-20 transition active:scale-95"
+                    >
+                        <img
+                            src="https://images.unsplash.com/photo-1589802829985-817e51171b92?auto=format&fit=crop&w=150&q=80"
+                            alt="كل الوطن"
+                            onerror="handleImgError(this, 'DZ', '#006233')"
+                            class="w-10 h-10 rounded-full object-cover mb-1.5 ring-2 ring-white/60"
+                        >
+                        <span class="text-[11px] font-bold">الكل</span>
+                    </button>
+
+                    <button
+                        type="button"
+                        onclick="filterRegion('الصحراء', this)"
+                        class="filter-btn flex flex-col items-center flex-shrink-0 bg-white text-gray-800 p-2.5 rounded-2xl shadow-sm border border-gray-100 w-20 transition active:scale-95"
+                    >
+                        <img
+                            src="https://images.unsplash.com/photo-1509316785289-025f5b846b35?auto=format&fit=crop&w=150&q=80"
+                            alt="الصحراء"
+                            onerror="handleImgError(this, 'الصحراء', '#d97706')"
+                            class="w-10 h-10 rounded-full object-cover mb-1.5 ring-2 ring-amber-200"
+                        >
+                        <span class="text-[11px] font-bold">الصحراء</span>
+                    </button>
+
+                    <button
+                        type="button"
+                        onclick="filterRegion('الساحل', this)"
+                        class="filter-btn flex flex-col items-center flex-shrink-0 bg-white text-gray-800 p-2.5 rounded-2xl shadow-sm border border-gray-100 w-20 transition active:scale-95"
+                    >
+                        <img
+                            src="https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=150&q=80"
+                            alt="الساحل"
+                            onerror="handleImgError(this, 'الساحل', '#0284c7')"
+                            class="w-10 h-10 rounded-full object-cover mb-1.5 ring-2 ring-blue-200"
+                        >
+                        <span class="text-[11px] font-bold">الساحل</span>
+                    </button>
+
+                    <button
+                        type="button"
+                        onclick="filterRegion('الجبال', this)"
+                        class="filter-btn flex flex-col items-center flex-shrink-0 bg-white text-gray-800 p-2.5 rounded-2xl shadow-sm border border-gray-100 w-20 transition active:scale-95"
+                    >
+                        <img
+                            src="https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?auto=format&fit=crop&w=150&q=80"
+                            alt="الجبال"
+                            onerror="handleImgError(this, 'الجبال', '#0d9488')"
+                            class="w-10 h-10 rounded-full object-cover mb-1.5 ring-2 ring-teal-200"
+                        >
+                        <span class="text-[11px] font-bold">الجبال</span>
+                    </button>
+
+                    <button
+                        type="button"
+                        onclick="filterRegion('التراث', this)"
+                        class="filter-btn flex flex-col items-center flex-shrink-0 bg-white text-gray-800 p-2.5 rounded-2xl shadow-sm border border-gray-100 w-20 transition active:scale-95"
+                    >
+                        <img
+                            src="https://images.unsplash.com/photo-1552832230-c0197dd311b5?auto=format&fit=crop&w=150&q=80"
+                            alt="التراث"
+                            onerror="handleImgError(this, 'التراث', '#7c2d12')"
+                            class="w-10 h-10 rounded-full object-cover mb-1.5 ring-2 ring-emerald-200"
+                      
