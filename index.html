@@ -1,4 +1,4 @@
-```html
+
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
@@ -341,3 +341,337 @@
                             onerror="handleImgError(this, 'التراث', '#7c2d12')"
                             class="w-10 h-10 rounded-full object-cover mb-1.5 ring-2 ring-emerald-200"
                       
+                        >
+                        <span class="text-[11px] font-bold">التراث</span>
+                    </button>
+                </div>
+            </section>
+
+            <!-- قائمة الباقات السياحية الشاملة والوجهات -->
+            <section class="space-y-3">
+                <div class="flex justify-between items-center">
+                    <h3 class="font-bold text-sm text-gray-800" id="dest-heading">الباقات السياحية الشاملة والمعتمدة</h3>
+                    <span id="dest-count" class="text-[11px] text-emeraldDz font-bold bg-emeraldDz/10 px-2.5 py-0.5 rounded-full">6 باقات</span>
+                </div>
+                <div id="destinations-grid" class="space-y-4"></div>
+            </section>
+
+        </div>
+
+        <!-- 2. تبويب الخريطة التفاعلية (#tab-map) -->
+        <div id="tab-map" class="hidden space-y-4 animate-fade-up">
+            <div class="bg-white p-4 rounded-2xl shadow-sm border border-gray-100">
+                <h3 class="font-bold text-sm text-gray-800">🗺️ خريطة الوجهات والمرافق المعتمدة</h3>
+                <p class="text-[11px] text-gray-500 mt-0.5">اختاري أي ولاية لمعاينة موقعها على الخريطة أو فتحها مباشرة في Google Maps</p>
+                
+                <div class="relative w-full h-56 rounded-xl overflow-hidden mt-3 border border-gray-200 bg-gray-100">
+                    <iframe
+                        id="gmap-frame"
+                        title="خريطة الجزائر السياحية"
+                        src="https://maps.google.com/maps?q=Algeria&t=&z=5&ie=UTF8&iwloc=&output=embed"
+                        class="w-full h-full border-0"
+                        loading="lazy"
+                    ></iframe>
+                </div>
+
+                <div class="flex gap-2 overflow-x-auto hide-scrollbar pt-3 pb-1" id="map-pins-bar"></div>
+            </div>
+        </div>
+
+        <!-- 3. تبويب رحلاتي وحجوزاتي (#tab-trips) -->
+        <div id="tab-trips" class="hidden space-y-4 animate-fade-up">
+            <div class="flex justify-between items-center">
+                <h3 class="font-bold text-sm text-gray-800">🎫 تذاكري وحجوزاتي المؤكدة</h3>
+                <span class="text-[11px] text-emeraldDz font-bold" id="trips-total-badge">0 حجز</span>
+            </div>
+            <div id="my-trips-list" class="space-y-3"></div>
+        </div>
+
+        <!-- 4. واجهة الشريك / مزود الخدمة (#role-partner-view) -->
+        <div id="role-partner-view" class="hidden space-y-4 animate-fade-up">
+            <div class="bg-gradient-to-br from-gray-900 to-gray-800 text-white p-5 rounded-2xl shadow-md space-y-2">
+                <div class="flex justify-between items-center">
+                    <span class="text-[10px] bg-emeraldDz px-2.5 py-0.5 rounded-full font-bold">بوابة الشركاء B2B</span>
+                    <span class="text-xs text-emerald-300 font-bold">حالة الحساب: موثق ✅</span>
+                </div>
+                <h3 class="font-bold text-base">لوحة تحكم الفنادق والمرشدين</h3>
+                <p class="text-xs text-gray-300">أديري باقاتك السياحية واستقبلي الحجوزات المباشرة بدون وسطاء.</p>
+            </div>
+
+            <div class="grid grid-cols-2 gap-3">
+                <div class="bg-white p-3.5 rounded-2xl border border-gray-100 shadow-2xs">
+                    <span class="text-xs text-gray-400">الحجوزات النشطة</span>
+                    <p class="text-xl font-extrabold text-emeraldDz mt-1" id="partner-bookings-count">14</p>
+                </div>
+                <div class="bg-white p-3.5 rounded-2xl border border-gray-100 shadow-2xs">
+                    <span class="text-xs text-gray-400">إجمالي العوائد</span>
+                    <p class="text-xl font-extrabold text-gray-800 mt-1">342,000 دج</p>
+                </div>
+            </div>
+
+            <div class="bg-white p-4 rounded-2xl border border-gray-100 shadow-2xs space-y-3">
+                <h4 class="font-bold text-xs text-gray-800">➕ إضافة عرض سياحي جديد</h4>
+                <input type="text" id="partner-pkg-title" placeholder="اسم الباقة (مثلاً: جولة في جرجرة)" class="w-full text-xs border border-gray-200 rounded-xl px-3 py-2 focus:outline-none focus:border-emeraldDz">
+                <div class="grid grid-cols-2 gap-2">
+                    <input type="number" id="partner-pkg-price" placeholder="السعر (دج)" class="w-full text-xs border border-gray-200 rounded-xl px-3 py-2 focus:outline-none focus:border-emeraldDz">
+                    <select id="partner-pkg-cat" class="w-full text-xs border border-gray-200 rounded-xl px-3 py-2 focus:outline-none focus:border-emeraldDz">
+                        <option value="الجبال">الجبال</option>
+                        <option value="الساحل">الساحل</option>
+                        <option value="الصحراء">الصحراء</option>
+                        <option value="التراث">التراث</option>
+                    </select>
+                </div>
+                <button type="button" onclick="addPartnerPackage()" class="w-full bg-emeraldDz text-white font-bold text-xs py-2.5 rounded-xl hover:bg-emerald-800 transition">نشر الباقة في التطبيق 🚀</button>
+            </div>
+        </div>
+
+        <!-- 5. واجهة لوحة الإدارة (#role-admin-view) -->
+        <div id="role-admin-view" class="hidden space-y-4 animate-fade-up">
+            <div class="bg-white p-4 rounded-2xl border border-gray-100 shadow-sm space-y-3">
+                <div class="flex justify-between items-center">
+                    <h3 class="font-bold text-sm text-gray-900">📊 مؤشرات أداء منصة Rihla DZ</h3>
+                    <span class="text-[10px] bg-coralDz/10 text-coralDz font-bold px-2 py-0.5 rounded-full">مباشر</span>
+                </div>
+                <div class="grid grid-cols-3 gap-2 text-center">
+                    <div class="bg-gray-50 p-2.5 rounded-xl">
+                        <p class="text-sm font-extrabold text-emeraldDz">1,280</p>
+                        <p class="text-[10px] text-gray-500">مسافر نشط</p>
+                    </div>
+                    <div class="bg-gray-50 p-2.5 rounded-xl">
+                        <p class="text-sm font-extrabold text-gray-800">48</p>
+                        <p class="text-[10px] text-gray-500">شريك معتمد</p>
+                    </div>
+                    <div class="bg-gray-50 p-2.5 rounded-xl">
+                        <p class="text-sm font-extrabold text-coralDz">98%</p>
+                        <p class="text-[10px] text-gray-500">رضا العملاء</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- شريط التنقل السفلي الثابت (للمسافر) -->
+    <nav id="bottom-nav" class="fixed bottom-0 inset-x-0 max-w-md mx-auto bg-white/95 backdrop-blur-md border-t border-gray-200 px-6 py-2 flex justify-between items-center z-40 shadow-lg">
+        <button type="button" onclick="switchTab('home', this)" class="nav-tab-btn flex flex-col items-center text-emeraldDz font-bold transition">
+            <span class="text-lg">🧭</span>
+            <span class="text-[10px] mt-0.5">استكشف</span>
+        </button>
+        <button type="button" onclick="switchTab('map', this)" class="nav-tab-btn flex flex-col items-center text-gray-400 hover:text-emeraldDz font-bold transition">
+            <span class="text-lg">🗺️</span>
+            <span class="text-[10px] mt-0.5">الخريطة</span>
+        </button>
+        <button type="button" onclick="switchTab('trips', this)" class="nav-tab-btn relative flex flex-col items-center text-gray-400 hover:text-emeraldDz font-bold transition">
+            <span class="text-lg">🎫</span>
+            <span class="text-[10px] mt-0.5">رحلاتي</span>
+            <span id="nav-trips-badge" class="hidden absolute -top-1 -left-2 bg-coralDz text-white text-[9px] w-4 h-4 rounded-full flex items-center justify-center font-extrabold">0</span>
+        </button>
+    </nav>
+
+    <!-- نافذة الحجز وتأكيد الدفع (Modal) -->
+    <div id="booking-modal" class="hidden fixed inset-0 bg-black/60 backdrop-blur-xs z-50 flex items-end sm:items-center justify-center p-4">
+        <div class="bg-white w-full max-w-md rounded-3xl p-5 space-y-4 shadow-2xl animate-fade-up">
+            <div class="flex justify-between items-center border-b border-gray-100 pb-3">
+                <h4 class="font-extrabold text-sm text-gray-900">تأكيد حجز الباقة السياحية</h4>
+                <button type="button" onclick="closeBookingModal()" class="w-7 h-7 rounded-full bg-gray-100 text-gray-600 text-xs font-bold">✕</button>
+            </div>
+            <div id="modal-pkg-summary" class="bg-emeraldDz/5 border border-emeraldDz/20 p-3 rounded-2xl text-xs space-y-1"></div>
+            <div class="space-y-2.5 text-xs">
+                <div>
+                    <label class="block text-gray-600 font-bold mb-1">تاريخ الانطلاق:</label>
+                    <input type="date" id="booking-date" class="w-full border border-gray-200 rounded-xl px-3 py-2 focus:outline-none focus:border-emeraldDz">
+                </div>
+                <div class="grid grid-cols-2 gap-2">
+                    <div>
+                        <label class="block text-gray-600 font-bold mb-1">عدد المسافرين:</label>
+                        <input type="number" id="booking-guests" min="1" max="15" value="2" class="w-full border border-gray-200 rounded-xl px-3 py-2 focus:outline-none focus:border-emeraldDz">
+                    </div>
+                    <div>
+                        <label class="block text-gray-600 font-bold mb-1">طريقة الدفع:</label>
+                        <select id="booking-payment" class="w-full border border-gray-200 rounded-xl px-3 py-2 focus:outline-none focus:border-emeraldDz">
+                            <option value="البطاقة الذهبية / CIB">💳 الذهبية / CIB</option>
+                            <option value="الدفع عند الوصول">💵 نقداً عند الوصول</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <button type="button" onclick="confirmBooking()" class="w-full bg-emeraldDz hover:bg-emerald-800 text-white font-bold py-3 rounded-xl text-sm shadow-md transition active:scale-95">
+                تأكيد الحجز وإصدار التذكرة ✅
+            </button>
+        </div>
+    </div>
+
+    <!-- إشعار منبثق (Toast) -->
+    <div id="toast-box" class="hidden fixed top-20 inset-x-0 max-w-xs mx-auto bg-gray-900 text-white text-xs font-bold py-2.5 px-4 rounded-2xl shadow-xl text-center z-50 animate-fade-up"></div>
+
+    <script>
+        let isFrench = false;
+        let currentCategory = 'الكل';
+        let selectedPackage = null;
+        let myBookings = [];
+
+        const packagesData = [
+            {
+                id: 1,
+                title: 'آثار جميلة الرومانية ومدينة سطيف',
+                location: 'سطيف',
+                category: 'التراث',
+                duration: 'يومان / ليلة',
+                price: 16500,
+                rating: 4.9,
+                includes: 'فندق 4 نجوم + مرشد أثري + نقل مكيّف',
+                img: 'https://images.unsplash.com/photo-1552832230-c0197dd311b5?auto=format&fit=crop&w=700&q=80',
+                mapQuery: 'Djemila, Setif, Algeria'
+            },
+            {
+                id: 2,
+                title: 'جسور قسنطينة المعلقة والمدينة العتيقة',
+                location: 'قسنطينة',
+                category: 'التراث',
+                duration: 'يومان / ليلة',
+                price: 18000,
+                rating: 4.8,
+                includes: 'إقامة فندقية + جولة الجسور + غداء تقليدي',
+                img: 'https://images.unsplash.com/photo-1589802829985-817e51171b92?auto=format&fit=crop&w=700&q=80',
+                mapQuery: 'Constantine, Algeria'
+            },
+            {
+                id: 3,
+                title: 'قمة قورايا وشواطئ بجاية الخلابة',
+                location: 'بجاية',
+                category: 'الساحل',
+                duration: '3 أيام / ليلتان',
+                price: 24500,
+                rating: 4.9,
+                includes: 'منتجع ساحلي + خرجة بحرية + مرشد محلي',
+                img: 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=700&q=80',
+                mapQuery: 'Cap Carbon, Bejaia, Algeria'
+            },
+            {
+                id: 4,
+                title: 'مغامرة أعالي جرجرة وتيكجدة',
+                location: 'البويرة وتيزي وزو',
+                category: 'الجبال',
+                duration: 'يومان / ليلة',
+                price: 15000,
+                rating: 4.7,
+                includes: 'شاليه جبلي + مسار مشي + وجبات تقليدية',
+                img: 'https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?auto=format&fit=crop&w=700&q=80',
+                mapQuery: 'Tikjda, Algeria'
+            },
+            {
+                id: 5,
+                title: 'سحر كثبان تاغيت وواحات الساورة',
+                location: 'بشار - تاغيت',
+                category: 'الصحراء',
+                duration: '4 أيام / 3 ليالٍ',
+                price: 42000,
+                rating: 5.0,
+                includes: 'مخيم صحراوي + سهرة تراثية + جولة رباعية الدفع',
+                img: 'https://images.unsplash.com/photo-1509316785289-025f5b846b35?auto=format&fit=crop&w=700&q=80',
+                mapQuery: 'Taghit, Algeria'
+            },
+            {
+                id: 6,
+                title: 'قصور وادي ميزاب وغرداية العريقة',
+                location: 'غرداية',
+                category: 'الصحراء',
+                duration: '3 أيام / ليلتان',
+                price: 33000,
+                rating: 4.9,
+                includes: 'دار ضيافة تقليدية + زيارة القصور + واحة بني يزقن',
+                img: 'https://images.unsplash.com/photo-1547234935-80c7145ec969?auto=format&fit=crop&w=700&q=80',
+                mapQuery: 'Ghardaia, Algeria'
+            }
+        ];
+
+        function handleImgError(imgEl, label, bgColor) {
+            imgEl.onerror = null;
+            imgEl.style.backgroundColor = bgColor || '#006233';
+            imgEl.src = 'data:image/svg+xml;utf8,' + encodeURIComponent(
+                `<svg xmlns="http://www.w3.org/2000/svg" width="400" height="250"><rect width="100%" height="100%" fill="${bgColor || '#006233'}"/><text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" fill="white" font-family="sans-serif" font-size="18" font-weight="bold">${label}</text></svg>`
+            );
+        }
+
+        function showToast(msg) {
+            const toast = document.getElementById('toast-box');
+            toast.textContent = msg;
+            toast.classList.remove('hidden');
+            clearTimeout(window._toastTimer);
+            window._toastTimer = setTimeout(() => toast.classList.add('hidden'), 3200);
+        }
+
+        function updateBudgetLabel(val) {
+            document.getElementById('budget-val').textContent = Number(val).toLocaleString('en-US');
+        }
+
+        function renderPackages() {
+            const grid = document.getElementById('destinations-grid');
+            const filtered = currentCategory === 'الكل'
+                ? packagesData
+                : packagesData.filter(p => p.category === currentCategory);
+
+            document.getElementById('dest-count').textContent = `${filtered.length} باقات`;
+
+            grid.innerHTML = filtered.map(pkg => `
+                <article class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden transition hover:shadow-md">
+                    <div class="relative h-40 bg-gray-200">
+                        <img src="${pkg.img}" alt="${pkg.title}" onerror="handleImgError(this, '${pkg.location}', '#006233')" class="w-full h-full object-cover">
+                        <span class="absolute top-2.5 right-2.5 bg-white/95 text-gray-800 text-[10px] font-extrabold px-2.5 py-1 rounded-full shadow-2xs">📍 ${pkg.location}</span>
+                        <span class="absolute top-2.5 left-2.5 bg-emeraldDz text-white text-[10px] font-bold px-2 py-1 rounded-full">⭐ ${pkg.rating}</span>
+                    </div>
+                    <div class="p-3.5 space-y-2.5">
+                        <div class="flex justify-between items-start gap-2">
+                            <h4 class="font-bold text-sm text-gray-900 leading-snug">${pkg.title}</h4>
+                            <span class="text-[10px] bg-gray-100 text-gray-600 font-bold px-2 py-1 rounded-lg whitespace-nowrap">${pkg.duration}</span>
+                        </div>
+                        <p class="text-[11px] text-gray-500">✅ ${pkg.includes}</p>
+                        <div class="flex justify-between items-center pt-2 border-t border-gray-100">
+                            <div>
+                                <span class="text-[10px] text-gray-400 block">السعر للشخص</span>
+                                <span class="font-extrabold text-sm text-emeraldDz">${pkg.price.toLocaleString('en-US')} دج</span>
+                            </div>
+                            <div class="flex gap-1.5">
+                                <a href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(pkg.mapQuery)}" target="_blank" rel="noopener" class="px-2.5 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-xl text-xs font-bold transition">🗺️</a>
+                                <button type="button" onclick="openBookingModal(${pkg.id})" class="px-4 py-2 bg-emeraldDz hover:bg-emerald-800 text-white rounded-xl text-xs font-bold shadow-2xs transition active:scale-95">احجز الآن</button>
+                            </div>
+                        </div>
+                    </div>
+                </article>
+            `).join('');
+        }
+
+        function filterRegion(cat, btnEl) {
+            currentCategory = cat;
+            document.querySelectorAll('.filter-btn').forEach(btn => {
+                btn.classList.remove('bg-emeraldDz', 'text-white');
+                btn.classList.add('bg-white', 'text-gray-800');
+            });
+            btnEl.classList.remove('bg-white', 'text-gray-800');
+            btnEl.classList.add('bg-emeraldDz', 'text-white');
+            renderPackages();
+        }
+
+        function generateTrip() {
+            const dest = document.getElementById('dest-select').value;
+            const interest = document.getElementById('interest-select').value;
+            const duration = document.getElementById('duration-select').value;
+            const budget = Number(document.getElementById('budget-range').value);
+
+            const resultBox = document.getElementById('ai-plan-result');
+            document.getElementById('ai-plan-img').src = 'https://images.unsplash.com/photo-1589802829985-817e51171b92?auto=format&fit=crop&w=700&q=80';
+            document.getElementById('ai-plan-title').textContent = `📋 برنامج ${dest} (${duration})`;
+
+            document.getElementById('ai-plan-content').innerHTML = `
+                <div class="flex flex-wrap gap-1.5">
+                    <span class="bg-emerald-50 text-emeraldDz font-bold px-2 py-1 rounded-lg">${interest}</span>
+                    <span class="bg-red-50 text-coralDz font-bold px-2 py-1 rounded-lg">الميزانية: ${budget.toLocaleString('en-US')} دج</span>
+                </div>
+                <ul class="space-y-1.5 text-gray-700 list-disc pr-4">
+                    <li><strong>اليوم 1:</strong> الاستقبال والتوجه إلى ${dest}، تسجيل الدخول في إقامة معتمدة، وجولة استكشافية مسائية مع مرشد.</li>
+                    <li><strong>اليوم 2:</strong> زيارة أهم المعالم السياحية والتاريخية وتذوق الأطباق المحلية الأصيلة.</li>
+                    <li><strong>الخدمات المشمولة:</strong> تأمين السفر، نقل سياحي، ودعم 24/7 عبر التطبيق.</li>
+                </ul>
+                <div class="flex gap-2 pt-1">
+                    <a href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(dest + ' Algeria')}" target="_blank" rel="noopener" class="flex-1 text-center py-2 bg-gray-100 hover:bg-gray-200 text-gray-800 font-bold rounded-xl transition">فتح في الخرائط 🗺️</a>
+                    <button type="button" onclick="bookCustomPlan('${dest}', ${budget})" class="flex-1 py-2 bg-emeraldDz hover:bg-eme
